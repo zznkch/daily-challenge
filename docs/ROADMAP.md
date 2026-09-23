@@ -1,0 +1,85 @@
+# Roadmap
+
+Daily Challenge is being built incrementally, phase by phase. After each
+phase: implement → build → fix errors → verify responsive behavior → commit.
+This file is the single source of truth for what's done and what's next.
+
+## Phase 1 — Foundation ✅ DONE
+
+- [x] Next.js 14 + TypeScript + Tailwind project scaffolded
+- [x] Dark, premium design system (colors, type, spacing, shadows) in `tailwind.config.ts`
+- [x] Responsive shell: desktop header nav + mobile bottom nav (Home / Challenges / Rankings / Friends / Profile)
+- [x] Footer with Privacy/Terms placeholders
+- [x] Homepage: hero "Today's Challenge", challenge grid, today's ranking, friends activity, progress widget
+- [x] Reusable UI primitives: Button, Card, Badge, ProgressBar
+- [x] Placeholder routes for not-yet-built areas (login, register, challenges, rankings, friends, groups, profile, privacy, terms) so no navigation link is dead
+- [x] Custom 404 page
+- [x] SEO base metadata + Open Graph in root layout
+- [x] `npm run typecheck` and `npm run build` verified clean
+- [x] `.env.example`, README, this roadmap
+
+All data on the homepage currently comes from `lib/data/mock.ts` — clearly
+marked as temporary and replaced in Phase 3.
+
+## Phase 2 — Authentication & Profiles
+
+- [ ] Prisma + PostgreSQL setup, initial schema (User, Profile, Account, Session)
+- [ ] Auth.js: register, login, logout, session handling
+- [ ] Password hashing (bcrypt/argon2), never plaintext
+- [ ] Forgot password / reset password flow
+- [ ] Protected routes + server-side auth checks
+- [ ] Public profile page `/u/[username]`
+- [ ] Edit profile (avatar, username, password)
+- [ ] Account deletion
+
+## Phase 3 — Mini-games & Daily Challenge Engine
+
+- [ ] Modular game architecture under `/games/[slug]`
+- [ ] Reaction Test, Click Speed, Memory, Math Rush, Quick Quiz (5 games, fully playable)
+- [ ] Score submission API with server-side validation (impossible-score / timing checks)
+- [ ] Daily challenge selection engine (server-side date handling, no hard-coded dates)
+- [ ] Replace `lib/data/mock.ts` with real database-backed data fetching
+
+## Phase 4 — Leaderboards, XP, Levels, Streaks, Badges
+
+- [ ] Global / daily / weekly / monthly / friends / group leaderboards with pagination & filters
+- [ ] XP + level progression formula
+- [ ] Streak tracking + calendar view + milestone rewards
+- [ ] Badge definitions + award logic + profile display
+
+## Phase 5 — Friends & Groups
+
+- [ ] User search, friend requests (send/accept/reject/remove)
+- [ ] Unique invite links `/invite/[code]`
+- [ ] Friend challenges (select friend(s)/group, private challenge, auto-close on expiry)
+- [ ] Groups: create/join/leave, admin controls, group ranking, group invite links `/join/[code]`
+- [ ] Notification triggers for all of the above
+
+## Phase 6 — Notifications, Sharing, SEO
+
+- [ ] Notification center (read/unread, timestamps, deep links)
+- [ ] Share result / share profile with Open Graph image support
+- [ ] Per-game SEO content, sitemap.xml, robots.txt
+
+## Phase 7 — Advertising & Premium Architecture
+
+- [ ] Modular ad slot components (never during gameplay or over controls)
+- [ ] Premium data model + gating (no real payment integration without provided credentials)
+- [ ] Stripe-ready architecture (not wired to real keys)
+
+## Phase 8 — Hardening & Launch Polish
+
+- [ ] Full security review (authz on every route/API, input validation, rate limiting)
+- [ ] Accessibility pass (keyboard nav, focus states, contrast, reduced motion)
+- [ ] Performance pass (bundle size, image/query/caching optimization)
+- [ ] Real Privacy Policy & Terms of Service (GDPR-ready), replacing the Phase 1 placeholders
+- [ ] Admin dashboard + reporting/moderation
+- [ ] Full manual test pass (desktop + mobile) against the Phase 40 checklist in the original spec
+
+## Notes for whoever (human or Claude) picks up the next phase
+
+- Don't touch `lib/data/mock.ts` consumers without replacing them with real
+  data fetching in the same change — no half-migrated screens.
+- Every new route must be reachable from navigation or explicitly documented
+  as unlinked (e.g. `/u/[username]`, `/invite/[code]`).
+- Run `npm run typecheck && npm run build` before committing.
