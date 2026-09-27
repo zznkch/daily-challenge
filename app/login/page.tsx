@@ -1,11 +1,15 @@
-import { ComingSoon } from "@/components/ui/coming-soon";
+import { redirect } from "next/navigation";
+import { AuthCard } from "@/components/auth/auth-card";
+import { LoginForm } from "@/components/auth/login-form";
+import { getCurrentUser } from "@/lib/auth/session";
 
-export default function LoginPage() {
+export default async function LoginPage() {
+  const user = await getCurrentUser();
+  if (user) redirect("/");
+
   return (
-    <ComingSoon
-      title="Login is on its way"
-      description="Secure email/password authentication is being built next."
-      phase="Phase 2"
-    />
+    <AuthCard title="Log in" subtitle="Welcome back.">
+      <LoginForm />
+    </AuthCard>
   );
 }

@@ -1,11 +1,8 @@
-import { ComingSoon } from "@/components/ui/coming-soon";
+import { redirect } from "next/navigation";
+import { getCurrentUser } from "@/lib/auth/session";
 
-export default function ProfilePage() {
-  return (
-    <ComingSoon
-      title="Profiles are coming"
-      description="Once accounts exist, your public profile, stats, and badges will live here."
-      phase="Phase 2"
-    />
-  );
+export default async function ProfileRedirectPage() {
+  const user = await getCurrentUser();
+  if (!user) redirect("/login");
+  redirect(`/u/${user.username}`);
 }

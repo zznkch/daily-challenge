@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { Flame } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { LogoutButton } from "@/components/auth/logout-button";
+import { getCurrentUser } from "@/lib/auth/session";
 
 const navItems = [
   { href: "/", label: "Home" },
@@ -10,7 +12,9 @@ const navItems = [
   { href: "/groups", label: "Groups" },
 ];
 
-export function SiteHeader() {
+export async function SiteHeader() {
+  const user = await getCurrentUser();
+
   return (
     <header className="sticky top-0 z-40 border-b border-border-subtle bg-background/80 backdrop-blur-md">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
@@ -36,16 +40,29 @@ export function SiteHeader() {
         </nav>
 
         <div className="flex items-center gap-2">
-          <Link href="/login" className="hidden sm:block">
-            <Button variant="ghost" size="sm">
-              Log in
-            </Button>
-          </Link>
-          <Link href="/register">
-            <Button variant="primary" size="sm">
-              Sign up
-            </Button>
-          </Link>
+          {user ? (
+            <>
+              <Link href={`/u/${user.username}`} className="hidden sm:block">
+                <Button variant="ghost" size="sm">
+                  {user.displayName ?? user.username}
+                </Button>
+              </Link>
+              <LogoutButton />
+            </>
+          ) : (
+            <>
+              <Link href="/login" className="hidden sm:block">
+                <Button variant="ghost" size="sm">
+                  Log in
+                </Button>
+              </Link>
+              <Link href="/register">
+                <Button variant="primary" size="sm">
+                  Sign up
+                </Button>
+              </Link>
+            </>
+          )}
         </div>
       </div>
     </header>

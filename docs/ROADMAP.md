@@ -18,19 +18,40 @@ This file is the single source of truth for what's done and what's next.
 - [x] `npm run typecheck` and `npm run build` verified clean
 - [x] `.env.example`, README, this roadmap
 
-All data on the homepage currently comes from `lib/data/mock.ts` — clearly
-marked as temporary and replaced in Phase 3.
+## Phase 2 — Authentication & Profiles ✅ DONE
 
-## Phase 2 — Authentication & Profiles
+- [x] Drizzle ORM + PostgreSQL schema (`users`, `sessions`, `password_reset_tokens`) — see note below on why Drizzle instead of Prisma
+- [x] Custom session auth: bcrypt password hashing, random session tokens (only the SHA-256 hash is ever stored), httpOnly/secure/sameSite cookies
+- [x] Register, login, logout — real forms wired to real API routes
+- [x] Forgot password / reset password flow, with a console-log fallback when no SMTP is configured
+- [x] Change password (requires current password, invalidates other sessions)
+- [x] Account deletion (cascades to sessions and reset tokens)
+- [x] Public profile page `/u/[username]`, DB-backed
+- [x] Edit profile (username, display name, avatar URL, bio)
+- [x] Protected route (`/profile/edit`): middleware does an optimistic cookie check, the page itself does the authoritative session check
+- [x] Auth-aware header (login/signup vs. username + logout)
+- [x] `npm run typecheck`, `npm run lint`, and `npm run build` verified clean
 
-- [ ] Prisma + PostgreSQL setup, initial schema (User, Profile, Account, Session)
-- [ ] Auth.js: register, login, logout, session handling
-- [ ] Password hashing (bcrypt/argon2), never plaintext
-- [ ] Forgot password / reset password flow
-- [ ] Protected routes + server-side auth checks
-- [ ] Public profile page `/u/[username]`
-- [ ] Edit profile (avatar, username, password)
-- [ ] Account deletion
+**Why Drizzle instead of the Prisma originally planned in Phase 1:** Prisma's
+query engine is a native binary fetched from Prisma's own CDN
+(`binaries.prisma.sh`) during `npm install`/`prisma generate`. That domain
+was blocked by the network policy in the environment this was built in —
+and the same kind of allowlist-based restriction is common in corporate CI
+and some serverless build environments. Rather than ship something that
+might silently fail to install for some contributors, Drizzle was swapped in:
+it talks to Postgres through the pure-JS `pg` driver, needs no native binary,
+and gives the same compile-time type safety.
+
+**Known limitation:** this environment could not verify Phase 2 against a
+live Postgres database (no database was provisioned) — `npm run typecheck`,
+`npm run lint`, and `npm run build` all pass, and none of them require a DB
+connection, but the actual register → login → edit-profile → delete-account
+flow has not been exercised end-to-end against a real database. Whoever sets
+`DATABASE_URL` and runs `npm run db:migrate` first should do a manual pass
+through that flow before trusting it in production.
+
+All data on the homepage still comes from `lib/data/mock.ts` — untouched by
+Phase 2, still replaced in Phase 3.
 
 ## Phase 3 — Mini-games & Daily Challenge Engine
 

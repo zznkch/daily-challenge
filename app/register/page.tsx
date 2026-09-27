@@ -1,11 +1,18 @@
-import { ComingSoon } from "@/components/ui/coming-soon";
+import { redirect } from "next/navigation";
+import { AuthCard } from "@/components/auth/auth-card";
+import { RegisterForm } from "@/components/auth/register-form";
+import { getCurrentUser } from "@/lib/auth/session";
 
-export default function RegisterPage() {
+export default async function RegisterPage() {
+  const user = await getCurrentUser();
+  if (user) redirect("/");
+
   return (
-    <ComingSoon
-      title="Sign up is on its way"
-      description="Account creation with secure password hashing is being built next."
-      phase="Phase 2"
-    />
+    <AuthCard
+      title="Create your account"
+      subtitle="Join the daily competition."
+    >
+      <RegisterForm />
+    </AuthCard>
   );
 }
